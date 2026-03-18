@@ -1,8 +1,9 @@
-function planificador_grua_torre()
-    clc; clear; close all;
+function [Q_res]=planificador_grua_torre(opcion)
 
+    animar = opcion;        % Elegir entre visualización de la trayectoria (cualquier otro valor) o animación (1)
+    
     %% Configuración de la Trayectoria
-    tipo = 'circulo';  % Opciones: 'recta' o 'circulo'
+    tipo = 'recta';  % Opciones: 'recta' o 'circulo'
     
     % Intervalos
     paso = 0.1; 
@@ -65,46 +66,58 @@ function planificador_grua_torre()
         end
         
         % Verificación con Cinemática Directa
-        [xyz, ~] = CinematicaDir(Q_res(:, i));
-        Pos_res(:, i) = xyz;
+        [xyz] = CinematicaDir(Q_res(:, i));
+        Pos_res(:, i) = xyz(1:3);
     end
 
     %% 4 Visualización
     % Trayectoria 
-    figure('Name', 'Trayectoria de la Grúa', 'Color', 'w');
-    plot3(x, y, z, 'k--', 'LineWidth', 1.5); hold on;
-    plot3(Pos_res(1, valid), Pos_res(2, valid), Pos_res(3, valid), 'ro', 'MarkerSize', 1);
-    grid on; axis equal;
-    xlabel('X [m]'); ylabel('Y [m]'); zlabel('Z [m]');
-    legend('Trayectoria deseada', 'Trayectoria seguida');
-    title(['Seguimiento de ' tipo]);
-    view(45, 30);
 
-    margen = 5; 
+    if animar==1
+
+        plot3(x, y, z, 'k--', 'LineWidth', 1.5); hold on;
+        plot3(Pos_res(1, valid), Pos_res(2, valid), Pos_res(3, valid), 'ro', 'MarkerSize', 1);
+
+    else
+        figure('Name', 'Trayectoria de la Grúa', 'Color', 'w');
+        plot3(x, y, z, 'k--', 'LineWidth', 1.5); hold on;
+        plot3(Pos_res(1, valid), Pos_res(2, valid), Pos_res(3, valid), 'ro', 'MarkerSize', 1);
+        
+        grid on; axis equal;
+        xlabel('X [m]'); ylabel('Y [m]'); zlabel('Z [m]');
+        legend('Trayectoria deseada', 'Trayectoria seguida');
+        title(['Seguimiento de ' tipo]);
+        view(45, 30);
     
-    % límites de datos
-    min_x = min(x); max_x = max(x);
-    min_y = min(y); max_y = max(y);
+        margen = 5; 
+        
+        % límites de datos
+        min_x = min(x); max_x = max(x);
+        min_y = min(y); max_y = max(y);
+        
+        % límites + margen
+        axis([min_x - margen, max_x + margen, ...
+              min_y - margen, max_y + margen, ...
+              0,              z_prueba + margen]);
     
-    % límites + margen
-    axis([min_x - margen, max_x + margen, ...
-          min_y - margen, max_y + margen, ...
-          0,              z_prueba + margen]);
-
-
-    % Evolución de q
-    figure('Name', 'Estados Articulares', 'Color', 'w');
-    nombres_q = {'q1', 'q2', 'q3', 'q4', 'q5'};
-    for k = 1:5
-        subplot(5, 1, k);
-        plot(intervalos, Q_res(k, :), 'LineWidth', 1.5);
-        ylabel(nombres_q{k});
-        grid on;
-        if k==1, title('Evolución de las Articulaciones'); end
+        
+        % Evolución de q
+        figure('Name', 'Estados Articulares', 'Color', 'w');
+        nombres_q = {'q1', 'q2', 'q3', 'q4', 'q5'};
+        for k = 1:5
+            subplot(5, 1, k);
+            plot(intervalos, Q_res(k, :), 'LineWidth', 1.5);
+            ylabel(nombres_q{k});
+            grid on;
+            if k==1, title('Evolución de las Articulaciones'); end
+        end
+        xlabel('Intervalos');
+        
+        if any(~valid)
+            disp('ADVERTENCIA: Algunos puntos estuvieron fuera de rango (ver gráfica)');
+        end
+        
+    
     end
-    xlabel('Intervalos');
-    
-    if any(~valid)
-        disp('ADVERTENCIA: Algunos puntos estuvieron fuera de rango (ver gráfica)');
-    end
+
 end

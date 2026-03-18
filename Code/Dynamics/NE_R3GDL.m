@@ -119,7 +119,7 @@ syms jm1 jm2 jm3 jm4 jm5 bm1 bm2 bm3 bm4 bm5 real
       m5= m + M5; % kg
       s55 = [ 0,  0, L2/2]'; % m           
 
-      I55g= [ m5*L2^2/12,           0,      0;          % Definir que es L1 de una vez
+      I55g= [ m5*L2^2/12,           0,      0;         
                        0,  m5*L2^2/12,      0; 
                        0,           0,     0]; % kg.m2 
       I55= I55g + Steiner(-s55',zeros(3),m); % kg.m2

@@ -1,5 +1,9 @@
+function [Kp, Ti, Td, G11, G22, G33] = Funciones_transf(in)
+% A partir del modelo complejo se propporcionan las constantes de control para diferentes
+% tiempos de subida y las funciones de transferencia usadas. Como entrada
+% debe proporcionarse el tiempo de subida que se desee en segundos.
 
-%Valores iniciales
+temp_s=in;
 
 syms s k Ti Td q5 q4 q3 q2 q1 qd1 qdd1 qd2 qdd2 qd3 qdd3 qd4 qdd4 qd5 qdd5 g real
 
@@ -61,16 +65,53 @@ Tau1= Ma_ne(1)*q1*s^2+ Va_ne(1)*q1*s;
 Tau2= Ma_ne(2)*q2*s^2+ Va_ne(2)*q2*s;
 Tau3= Ma_ne(5)*q5*s^2+ Va_ne(5)*q5*s;
 
-G11= tf(1,[Ma_ne(1), Va_ne(1), 0])
-G22= tf(1,[Ma_ne(2), Va_ne(2), 0])
-G33= tf(1,[Ma_ne(5), Va_ne(5), 0])
+G11= tf(1,[Ma_ne(1), Va_ne(1), 0]);
+G22= tf(1,[Ma_ne(2), Va_ne(2), 0]);
+G33= tf(1,[Ma_ne(5), Va_ne(5), 0]);
 
-%% Valores del controlador PD tm=0.1
-kp1= 897630000; Td1=0.2*897630000; Ti1= 0;
-kp2= 6776.4; Td2= 0.2*6776.4; Ti2= 0;
-kp5= 88187; Td5= 0.2*88187; Ti5= 0;
+if temp_s==0.1
+    % Valores del controlador PD ts=0.1
+    kp1= 897630000; Td1=0.2*897630000; Ti1= 0;
+    kp2= 6776.4; Td2= 0.2*6776.4; Ti2= 0;
+    kp5= 88187; Td5= 0.2*88187; Ti5= 0;
 
-%% Valores del controlador PD tm=0.01
-kp1= 91597000000; Td1=0.2*91597000000; Ti1= 0;
-kp2= 685000; Td2= 0.2*685000; Ti2= 0;
-kp5= 8860000; Td5= 0.02*8860000; Ti5= 0;
+elseif temp_s==0.01
+    % Valores del controlador PD ts=0.01
+    kp1= 91597000000; Td1=0.02*91597000000; Ti1= 0;
+    kp2= 685000; Td2= 0.02*685000; Ti2= 0;
+    kp5= 8860000; Td5= 0.02*8860000; Ti5= 0;
+
+elseif temp_s==1
+    % Valores del controlador PD ts=1
+    kp1= 9158000; Td1=0.5*9158000; Ti1= 0;
+    kp2= 68.5; Td2= 0.5*68.5; Ti2= 0;
+    kp5= 886; Td5= 0.5*886; Ti5= 0;
+
+elseif temp_s==0.5
+    % Valores del controlador PD ts=0.5
+    kp1= 36635000; Td1=1*36635000; Ti1= 0;
+    kp2= 274; Td2= 1*274; Ti2= 0;
+    kp5= 3544; Td5= 1*3544; Ti5= 0;
+
+elseif temp_s==0.3
+    % Valores del controlador PD ts=0.3
+    kp1= 36635000; Td1=1/1.5*36635000; Ti1= 0;
+    kp2= 616.5; Td2= 1/1.5*616.5; Ti2= 0;
+    kp5= 7974; Td5= 1/1.5*7974; Ti5= 0;
+
+elseif temp_s==0.2
+    % Valores del controlador PD ts=0.2
+    kp1= 228980000; Td1=0.4*228980000; Ti1= 0;
+    kp2= 1712.5; Td2= 1/2.5*1712.5; Ti2= 0;
+    kp5= 22150; Td5= 1/2.5*22150; Ti5= 0;
+else
+    warning('El tiempo de subida propuesto para el control no está calculado. Todos los parámetros nulos')
+    kp1= 0; Td1= 0; Ti1= 0;
+    kp2= 0; Td2= 0; Ti2= 0;
+    kp5= 0; Td5= 0; Ti5= 0;
+end
+
+Kp=double([kp1;kp2;kp5]);
+Ti=double([Ti1;Ti2;Ti5]);
+Td=double([Td1;Td2;Td5]);
+end

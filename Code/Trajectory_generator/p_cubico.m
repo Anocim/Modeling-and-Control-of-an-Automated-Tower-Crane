@@ -1,6 +1,6 @@
 function PL=p_cubico(q,t,met,qd)
-%Dibuja el resultado de interpolar mediante spline cubico los valores q en
-%los instantes tt con las velocidades de paso qd.
+% Dibuja el resultado de interpolar mediante spline cubico los valores q en
+% los instantes tt con las velocidades de paso qd.
 % Devuelve un vector con 1 fila por punto con los 
 % resultados (t,q,qd,qdd)de muestrear el polinomio interpolador 
 % Utiliza la funcion i_cubico que obtiene los valores de los coeficientes
@@ -44,16 +44,29 @@ for intervalo=1:n-1
         PL=vertcat(PL,[tt,qt,qdt,qddt]);
     end
 
-% plot(t,q,'o');
-% grid;
+% subplot(3,1,1);
+% plot(t, q, 'o'); % Puntos de paso originales
 % hold on;
-% plot(PL(:,1),PL(:,2),'r');
-% hold on;
-% plot(PL(:,1),PL(:,3),'b');
-% hold on;
-% plot(PL(:,1),PL(:,4),'g');
-% hold on;
-% hold off;  
+% plot(PL(:,1), PL(:,2), 'r'); % Trayectoria interpolada (Posición)
+% grid on;
+% ylabel('Posición (q)');
+% title('Análisis de la Trayectoria');
+% legend('Puntos via', 'Interpolación');
+% 
+% % Subplot 2: Velocidad
+% subplot(3,1,2);
+% plot(PL(:,1), PL(:,3), 'b');
+% grid on;
+% ylabel('Velocidad (qd)');
+% 
+% % Subplot 3: Aceleración
+% subplot(3,1,3);
+% plot(PL(:,1), PL(:,4), 'g');
+% grid on;
+% ylabel('Aceleración (qdd)');
+% xlabel('Tiempo (t)');
+% 
+% hold off;
 end
 
 

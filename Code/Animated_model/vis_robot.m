@@ -1,8 +1,6 @@
-clear all; clc; close all;
+clc; close all;
 
-%% ======================
 % PARÁMETROS
-%% ======================
 L0  = 45;
 L1B = 35;
 L1A = L1B/2;
@@ -10,9 +8,7 @@ L2  = 15;
 
 robot = rigidBodyTree('DataFormat','column');
 
-%% ======================
-% BASE → TB0 (FIJA)
-%% ======================
+% BASE → TB0 (Fija)
 body0 = rigidBody('Base');
 
 jnt0 = rigidBodyJoint('jnt0','fixed');
@@ -27,9 +23,7 @@ addBody(robot, body0,'base');
 
 
 
-%% ======================
 % T01 → q1
-%% ======================
 body1 = rigidBody('PlumaRot');
 
 jnt1 = rigidBodyJoint('jnt1','revolute');
@@ -48,9 +42,7 @@ addVisual(body1,"Cylinder",[0.6 L1B], ...
 
 addBody(robot, body1,'Base');
 
-%% ======================
 % T12 → q2
-%% ======================
 body2 = rigidBody('Carrito');
 
 jnt2 = rigidBodyJoint('jnt2','prismatic');
@@ -71,9 +63,7 @@ addVisual(body2,"Box",[2 2 1]);
 
 addBody(robot, body2,'PlumaRot');
 
-%% ======================
 % T23 → q3
-%% ======================
 body3 = rigidBody('CableRot1');
 
 jnt3 = rigidBodyJoint('jnt3','revolute');
@@ -90,9 +80,7 @@ addVisual(body3,"Sphere",0.6);
 
 addBody(robot, body3,'Carrito');
 
-%% ======================
 % T34 → q4
-%% ======================
 body4 = rigidBody('CableRot2');
 
 jnt4 = rigidBodyJoint('jnt4','revolute');
@@ -110,9 +98,7 @@ addVisual(body4,"Sphere",0.6, ...
 
 addBody(robot, body4,'CableRot1');
 
-%% ======================
 % T45 → q5
-%% ======================
 body5 = rigidBody('CableExt');
 
 jnt5 = rigidBodyJoint('jnt5','prismatic');
@@ -130,9 +116,7 @@ L_cable = L2;
 
 addBody(robot, body5,'CableRot2');
 
-%% ======================
 % T56 → GANCHO
-%% ======================
 body6 = rigidBody('Gancho');
 
 jnt6 = rigidBodyJoint('jnt6','fixed');
@@ -144,14 +128,10 @@ addVisual(body6,"Box",[1 1 0.5]);
 
 addBody(robot, body6,'CableExt');
 
-%% ======================
-% CONFIGURACIÓN INICIAL
-%% ======================
+%% CONFIGURACIÓN INICIAL
 q_home = [0; 0; 0; 0; 0];
 
-%% ======================
-% VISUALIZACIÓN CORRECTA
-%% ======================
+%% VISUALIZACIÓN CORRECTA
 figure('Color','w');
 
 show(robot,q_home,...
@@ -190,39 +170,76 @@ lighting phong
 title('Grúa torre 5GDL subactuada');
 hold on;
 cable_plot = plot3([0 0],[0 0],[0 0],'Color',[0.5 0.5 0.5],'LineWidth',3);
-%% 
-sim('Sim_grua');
 
-plot3(xr, yr, zr,'--b','LineWidth',1.5)
-hold on;
+animar_cin=0;
 
-trayectoria = animatedline('Color','r','LineWidth',2);
-
-for k = 1:length(t)
-
-    qk = q(k,:)';  % columna
+if animar_cin==1
+    % Animacion control cinemático grúa 
+     
+    Q_res=planificador_grua_torre(1);
     
-    % actualizar robot
-    show(robot,qk,'PreservePlot',false,'Frames','off');
+    for k = 1:length(Q_res)
     
-    % Posición del punto superior del cable
-    T_top = getTransform(robot,qk,'CableRot2');
-    pos_top = tform2trvec(T_top);
-  
-    % obtener posición del efector final
-    T_ee = getTransform(robot,qk,'Gancho');
-    pos = tform2trvec(T_ee);
-
-    % Actualizar cable
-    set(cable_plot,...
-        'XData',[pos_top(1) pos(1)],...
-        'YData',[pos_top(2) pos(2)],...
-        'ZData',[pos_top(3) pos(3)]);
-
-
+        qk = Q_res(:,k);  % columna
+        
+        % actualizar robot
+        show(robot,qk,'PreservePlot',false,'Frames','off');
+        
+        % Posición del punto superior del cable
+        T_top = getTransform(robot,qk,'CableRot2');
+        pos_top = tform2trvec(T_top);
+      
+        % obtener posición del efector final
+        T_ee = getTransform(robot,qk,'Gancho');
+        pos = tform2trvec(T_ee);
     
-    % dibujar trayectoria
-    addpoints(trayectoria,pos(1),pos(2),pos(3));
+        % Actualizar cable
+        set(cable_plot,...
+            'XData',[pos_top(1) pos(1)],...
+            'YData',[pos_top(2) pos(2)],...
+            'ZData',[pos_top(3) pos(3)]);
+        
+        drawnow;
+    end
+elseif animar_cin==0
+
+    % Animacion control dinámico grúa 
+
+    plot3(xr, yr, zr,'--b','LineWidth',1.5)
+    hold on;
     
-    drawnow;
+    trayectoria = animatedline('Color','r','LineWidth',2);
+
+    salto = 50;
+
+    for k = 1:salto:length(t)
+    
+        qk = q(k,:)';  % columna
+        
+        % actualizar robot
+        show(robot,qk,'PreservePlot',false,'Frames','off');
+        
+        % Posición del punto superior del cable
+        T_top = getTransform(robot,qk,'CableRot2');
+        pos_top = tform2trvec(T_top);
+      
+        % obtener posición del efector final
+        T_ee = getTransform(robot,qk,'Gancho');
+        pos = tform2trvec(T_ee);
+    
+        % Actualizar cable
+        set(cable_plot,...
+            'XData',[pos_top(1) pos(1)],...
+            'YData',[pos_top(2) pos(2)],...
+            'ZData',[pos_top(3) pos(3)]);
+    
+    
+        title(sprintf('Grúa torre 5GDL subactuada | Tiempo: %.2f s', t(k)));
+        % dibujar trayectoria
+        addpoints(trayectoria,pos(1),pos(2),pos(3));
+        
+        drawnow;
+    end
 end
+
+

@@ -1,6 +1,6 @@
 function  [q1, q2, q3, q4, q5]= CinematicaInvSim()
 
-syms L0 L1 L2 x y z theta psi phi real            % Declaración de las variables simbólicas
+syms L0 L1A L2 x y z theta psi_sym phi real            % Declaración de las variables simbólicas
 
 PI=sym(pi);
 
@@ -10,11 +10,11 @@ PI=sym(pi);
 % ángulos de Euler para conseguir la definición de las variables
 % articulares. Se seguirá un procedimiento parecido al anterior.
 
-MRPY=rotz(phi)*roty(theta)*rotx(psi);
+MRPY=rotz(phi)*roty(theta)*rotx(psi_sym);
 
-% [cos(phi)*cos(theta), cos(phi)*sin(psi)*sin(theta) - cos(psi)*sin(phi), sin(phi)*sin(psi) + cos(phi)*cos(psi)*sin(theta), 0]
-% [cos(theta)*sin(phi), cos(phi)*cos(psi) + sin(phi)*sin(psi)*sin(theta), cos(psi)*sin(phi)*sin(theta) - cos(phi)*sin(psi), 0]
-% [        -sin(theta),                              cos(theta)*sin(psi),                              cos(psi)*cos(theta), 0]
+% [cos(phi)*cos(theta), cos(phi)*sin(psi_sym)*sin(theta) - cos(psi_sym)*sin(phi), sin(phi)*sin(psi_sym) + cos(phi)*cos(psi_sym)*sin(theta), 0]
+% [cos(theta)*sin(phi), cos(phi)*cos(psi_sym) + sin(phi)*sin(psi_sym)*sin(theta), cos(psi_sym)*sin(phi)*sin(theta) - cos(phi)*sin(psi_sym), 0]
+% [        -sin(theta),                              cos(theta)*sin(psi_sym),                              cos(psi_sym)*cos(theta), 0]
 % [                  0,                                                0,                                                0, 1]
 
 % Se compara con la matriz TB6 obtenida en la cinemática directa.

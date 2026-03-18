@@ -6,9 +6,9 @@ q4        = in(4);
 q5        = in(5);
 qd1       = in(6);
 qd2       = in(7);
-qd4       = in(8);
-qd5       = in(9);
-qd3       = in(10);
+qd3       = in(8);
+qd4       = in(9);
+qd5       = in(10);
 Tau1      = in(11);
 Tau2      = in(12);
 Tau3      = in(13);
@@ -36,12 +36,13 @@ if modelo==1
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       600.0*qd4*qd5 - 1500.0*qd3^2*sin(2.0*q4 + 3.14) - 6000.0*qd1*qd3*cos(q3) - 600.0*qd1*qd5*sin(q3) - 20.0*q5^2*qd3^2*sin(2.0*q4 + 3.14) - 5250.0*qd1^2*cos(q4 + 1.57)*sin(q3) + 80.0*q5*qd4*qd5 - 300.0*q5*qd3^2*sin(2.0*q4 + 3.14) - 600.0*qd1*qd2*sin(q4 + 1.57) + 6000.0*qd1*qd3*cos(q4 + 1.57)^2*cos(q3) - 300.0*q2*qd1^2*cos(q4 + 1.57)*sin(q3) - 700.0*q5*qd1^2*cos(q4 + 1.57)*sin(q3) - 80.0*q5*qd1*qd2*sin(q4 + 1.57) - 1200.0*q5*qd1*qd3*cos(q3) - 80.0*q5*qd1*qd5*sin(q3) + 3000.0*qd1^2*cos(q4 + 1.57)*sin(q4 + 1.57)*cos(q3)^2 - 80.0*q5^2*qd1*qd3*cos(q3) + 600.0*q5*qd1^2*cos(q4 + 1.57)*sin(q4 + 1.57)*cos(q3)^2 + 40.0*q5^2*qd1^2*cos(q4 + 1.57)*sin(q4 + 1.57)*cos(q3)^2 + 1200.0*q5*qd1*qd3*cos(q4 + 1.57)^2*cos(q3) - 40.0*q2*q5*qd1^2*cos(q4 + 1.57)*sin(q3) + 80.0*q5^2*qd1*qd3*cos(q4 + 1.57)^2*cos(q3);
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           4070.0*qd5 - 300.0*qd3^2*cos(q4)^2 - 40.0*q5*qd1^2 - 40.0*q5*qd4^2 - 300.0*qd1^2 - 300.0*qd4^2 - 80.0*qd1*qd2*sin(q4) + 600.0*qd1*qd4*sin(q3) + 300.0*qd1^2*cos(q3)^2*cos(q4)^2 - 40.0*q5*qd3^2*cos(q4)^2 - 700.0*qd1^2*cos(q4)*sin(q3) + 40.0*q5*qd1^2*cos(q3)^2*cos(q4)^2 - 40.0*q2*qd1^2*cos(q4)*sin(q3) + 80.0*q5*qd1*qd4*sin(q3) - 600.0*qd1*qd3*cos(q3)*cos(q4)*sin(q4) - 80.0*q5*qd1*qd3*cos(q3)*cos(q4)*sin(q4)];
     
-    Ga_ne =[
+
+        Ga_ne =[
                                    0
                                    0
     392.0*cos(q4)*sin(q3)*(q5 + 7.5)
     392.0*cos(q3)*sin(q4)*(q5 + 7.5)
-              -392.0*cos(q3)*cos(q4)];
+               -392.0*cos(q3)*cos(q4)];
 elseif modelo==2
     
     Ma_ne =[1140.0*q2^2 + 1.02e+4,      0, 0, 0,     0;
@@ -69,7 +70,6 @@ Ga_ne= double(Ga_ne);
 
  
 % Ma, Ga y Va provienen del cálculo iterativo de Newton-Euler
-
 % Aceleraciones
   qdd = Ma_ne\(T-Ga_ne-Va_ne);
   qdd = round(qdd,2);

@@ -1,4 +1,4 @@
-function [xyz,angEuler] = CinematicaDir(in)
+function [xyzangEuler] = CinematicaDir(in)
   q1       = in(1);           % Posiciones articulares
   q2       = in(2);            
   q3       = in(3);
@@ -34,5 +34,7 @@ phi = atan2(r21,r11);
 psi = atan2(r32,r33);
 
 angEuler = [phi;theta;psi];
+
+xyzangEuler= [xyz;angEuler];
 
 end
